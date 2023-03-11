@@ -64,6 +64,12 @@ chrome.tabs.query({active: true, currentWindow: true}, tabs => {
                             sendAlert(alertColor="red", alertText="<strong>Error " + error.status + " </strong> can't contact server");
                         });
                     } else {
+                        // Firefox handles this error differently than Chromium browsers and doesn't provide an error status code, so I will manually
+                        // add one. I believe this is due to the CORS pre-flight check failing. I solved his on Chromium browsers, but need to look into
+                        // solving it more elegantly for Firefox.
+                        if (typeof error.status === "undefined") { 
+                            error.status = "404";
+                        }
                         sendAlert(alertColor="red", alertText="<strong>Error " + error.status + " </strong> can't contact server");
                     }
               }); 
